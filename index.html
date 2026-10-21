@@ -194,36 +194,40 @@
     .alien-leg-left { left: 27px; transform: rotate(20deg); }
     .alien-leg-right { right: 27px; transform: rotate(-20deg); }
 
-    .buildings {
+    .voxel-city {
+      --block-size: 11px;
       display: flex;
       height: 128px;
       align-items: end;
-      gap: 6px;
+      gap: 4px;
     }
 
     .building {
-      display: flex;
-      width: clamp(31px, 7vw, 49px);
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #ffffff45;
-      border-bottom: 0;
-      border-radius: 5px 5px 0 0;
-      background: #37365c;
-      color: #f9d98b;
-      font-size: .7rem;
-      line-height: 1.7;
-      text-shadow: 0 0 7px #ffe7a1;
-      transition: opacity .25s, transform .25s;
+      display: grid;
+      align-content: end;
+      gap: 1px;
+      padding: 0 1px;
     }
 
-    .building:nth-child(1) { height: 48%; }
-    .building:nth-child(2) { height: 76%; background: #4d4b75; }
-    .building:nth-child(3) { height: 58%; }
-    .building:nth-child(4) { height: 94%; background: #4d4b75; }
-    .building:nth-child(5) { height: 66%; }
-    .building:nth-child(6) { height: 42%; background: #4d4b75; }
-    .building.gone { opacity: .13; transform: translateY(12px) rotate(8deg); }
+    .block {
+      width: var(--block-size);
+      height: var(--block-size);
+      border: 1px solid #ffffff25;
+      background: #c68156;
+      box-shadow: inset 2px 2px #ffffff24, inset -3px -3px #00000024;
+      transition: opacity .18s, transform .18s;
+    }
+
+    .building:nth-child(3n + 2) .block { background: #787f8e; }
+    .building:nth-child(3n) .block { background: #bd9a62; }
+    .block.roof { background: #5d6478; }
+    .block.window {
+      background: linear-gradient(90deg, #d9c582 0 26%, #525b70 27% 72%, #d9c582 73%);
+    }
+    .block.destroyed {
+      opacity: 0;
+      transform: translateY(8px) scale(.55);
+    }
 
     .town-message { position: relative; z-index: 1; margin: 5px 0 13px; font-weight: 650; }
 
@@ -288,7 +292,7 @@
     @media (max-width: 560px) {
       .game { width: min(100% - 20px, 760px); padding-top: 20px; }
       .town { min-height: 278px; padding: 16px 12px; }
-      .scene { min-height: 147px; }
+      .scene { min-height: 147px; gap: 8px; }
       .alien { width: 94px; height: 94px; flex-basis: 94px; }
       .antenna { top: -13px; height: 25px; }
       .antenna-left { left: 32px; }
@@ -301,7 +305,7 @@
       .alien-leg { bottom: -5px; width: 19px; height: 16px; }
       .alien-leg-left { left: 20px; }
       .alien-leg-right { right: 20px; }
-      .buildings { height: 106px; gap: 3px; }
+      .voxel-city { --block-size: 8px; height: 106px; gap: 1px; }
       .controls { grid-template-columns: 1fr 1fr; }
       .upgrade.primary { grid-column: 1 / -1; min-height: 66px; }
     }
@@ -336,10 +340,7 @@
           <span class="alien-leg alien-leg-left"></span>
           <span class="alien-leg alien-leg-right"></span>
         </div>
-        <div class="buildings" id="buildings" aria-hidden="true">
-          <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
-          <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
-        </div>
+        <div class="voxel-city" id="voxel-city" aria-hidden="true"></div>
       </div>
       <p class="town-message" id="town-message">ワヤヤンが町にあらわれた！</p>
       <div class="health-track" role="progressbar" aria-label="町の残り体力" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -382,6 +383,14 @@
         "「ワヤヤンの力、見せちゃうよー！」",
         "「次の町はどんなところかな？」"
       ];
+      const buildingShapes = [
+        { width: 3, height: 4 },
+        { width: 3, height: 6 },
+        { width: 3, height: 5 },
+        { width: 4, height: 7 },
+        { width: 3, height: 5 },
+        { width: 3, height: 3 }
+      ];
       const defaults = {
         towns: 0,
         power: 0,
@@ -392,6 +401,7 @@
       };
       let state = loadState();
       let toastTimer;
+      const cityBlocks = createCity();
 
       const elements = {
         townCount: document.getElementById("town-count"),
@@ -402,7 +412,7 @@
         healthFill: document.getElementById("health-fill"),
         healthTrack: document.querySelector(".health-track"),
         healthLabel: document.getElementById("health-label"),
-        buildings: [...document.querySelectorAll(".building")],
+        cityBlocks,
         attackButton: document.getElementById("attack-button"),
         attackDetail: document.getElementById("attack-detail"),
         powerButton: document.getElementById("power-button"),
@@ -412,6 +422,38 @@
         toast: document.getElementById("toast"),
         quip: document.getElementById("quip")
       };
+
+      function createCity() {
+        const city = document.getElementById("voxel-city");
+        const blocks = [];
+        const maxHeight = Math.max(...buildingShapes.map(({ height }) => height));
+
+        buildingShapes.forEach(({ width, height }, buildingIndex) => {
+          const building = document.createElement("div");
+          building.className = "building";
+          building.style.gridTemplateColumns = `repeat(${width}, var(--block-size))`;
+          building.style.gridTemplateRows = `repeat(${height}, var(--block-size))`;
+          city.append(building);
+        });
+
+        for (let row = maxHeight; row >= 1; row -= 1) {
+          buildingShapes.forEach(({ width, height }, buildingIndex) => {
+            if (row > height) return;
+            const building = city.children[buildingIndex];
+            for (let column = 1; column <= width; column += 1) {
+              const block = document.createElement("span");
+              block.className = "block";
+              if (row === height) block.classList.add("roof");
+              else if ((row + column + buildingIndex) % 3 === 0) block.classList.add("window");
+              block.style.gridColumn = String(column);
+              block.style.gridRow = String(height - row + 1);
+              building.append(block);
+              blocks.push(block);
+            }
+          });
+        }
+        return blocks;
+      }
 
       function loadState() {
         try {
@@ -491,7 +533,7 @@
         const hp = townHealth();
         const remaining = Math.max(0, hp - state.damage);
         const progress = Math.min(100, (state.damage / hp) * 100);
-        const ruined = Math.min(6, Math.floor(progress / (100 / 6)));
+        const destroyedBlocks = Math.floor((progress / 100) * cityBlocks.length);
         const nextPowerCost = powerCost();
         const nextAllyCost = allyCost();
 
@@ -499,11 +541,11 @@
         elements.power.textContent = format(state.power);
         elements.autoPower.textContent = `${format(state.allyLevel)} / 秒`;
         elements.townName.textContent = townNames[Math.min(state.towns, townNames.length - 1)];
-        elements.townMessage.textContent = state.power > 0 ? "町がどんどん壊れていく……！" : "ワヤヤンが町にあらわれた！";
+        elements.townMessage.textContent = state.damage > 0 ? "ブロックの街がどんどん崩れていく……！" : "ワヤヤンが町にあらわれた！";
         elements.healthFill.style.width = `${100 - progress}%`;
         elements.healthLabel.textContent = `町の元気 ${Math.ceil((remaining / hp) * 100)}%`;
         elements.healthTrack.setAttribute("aria-valuenow", String(Math.ceil((remaining / hp) * 100)));
-        elements.buildings.forEach((building, index) => building.classList.toggle("gone", index < ruined));
+        elements.cityBlocks.forEach((block, index) => block.classList.toggle("destroyed", index < destroyedBlocks));
         elements.attackDetail.textContent = `タップで ${format(tapDamage())} パワー`;
         elements.powerDetail.textContent = `攻撃力 +2　｜　${format(nextPowerCost)} パワー`;
         elements.allyDetail.textContent = `毎秒 +1 パワー　｜　${format(nextAllyCost)} パワー`;
