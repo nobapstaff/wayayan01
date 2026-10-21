@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17152f">
+  <title>ワヤヤンの地球侵略計画</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #17152f;
+      color: #fff;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 0%, #38316e 0, transparent 54%),
+        #17152f;
+    }
+
+    button { font: inherit; }
+
+    .game {
+      width: min(100% - 28px, 760px);
+      margin: 0 auto;
+      padding: 26px 0 40px;
+    }
+
+    header { text-align: center; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 5vw, 2.35rem);
+      letter-spacing: .04em;
+    }
+
+    .subtitle { margin: 7px 0 22px; color: #c2bfde; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat, .panel {
+      border: 1px solid #ffffff1b;
+      border-radius: 16px;
+      background: #ffffff0b;
+      box-shadow: 0 8px 28px #08071838;
+    }
+
+    .stat { padding: 12px 8px; text-align: center; }
+    .stat-label { display: block; color: #bbb8d5; font-size: .78rem; }
+    .stat-value { display: block; margin-top: 3px; font-size: 1.08rem; font-weight: 750; }
+
+    .town {
+      position: relative;
+      overflow: hidden;
+      min-height: 300px;
+      padding: 20px;
+      border: 1px solid #ffffff25;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #413c79 0%, #7877ae 68%, #58538b 100%);
+      text-align: center;
+    }
+
+    .town::before, .town::after {
+      position: absolute;
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 54px 30px #ffffffa6, 128px -6px #ffffffb8, 230px 44px #fff,
+        334px 9px #ffffffb8, 438px 45px #fff, 548px 3px #ffffffa6, 615px 50px #fff;
+      opacity: .8;
+    }
+
+    .town::before { top: 28px; left: 9%; }
+    .town::after { top: 75px; left: 22%; transform: scale(.7); }
+
+    .town-name {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      padding: 6px 13px;
+      border-radius: 99px;
+      background: #17152f7a;
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    .scene {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 158px;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 7vw, 42px);
+      padding-top: 15px;
+    }
+
+    .alien {
+      display: grid;
+      width: 124px;
+      height: 124px;
+      flex: 0 0 124px;
+      place-items: center;
+      border-radius: 50%;
+      background: #8bf0c5;
+      box-shadow: 0 0 35px #88f7c579, inset 0 -8px #00000012;
+      font-size: 4.7rem;
+      animation: hover 2.4s ease-in-out infinite;
+      user-select: none;
+    }
+
+    .buildings {
+      display: flex;
+      height: 128px;
+      align-items: end;
+      gap: 6px;
+    }
+
+    .building {
+      display: flex;
+      width: clamp(31px, 7vw, 49px);
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff45;
+      border-bottom: 0;
+      border-radius: 5px 5px 0 0;
+      background: #37365c;
+      color: #f9d98b;
+      font-size: .7rem;
+      line-height: 1.7;
+      text-shadow: 0 0 7px #ffe7a1;
+      transition: opacity .25s, transform .25s;
+    }
+
+    .building:nth-child(1) { height: 48%; }
+    .building:nth-child(2) { height: 76%; background: #4d4b75; }
+    .building:nth-child(3) { height: 58%; }
+    .building:nth-child(4) { height: 94%; background: #4d4b75; }
+    .building:nth-child(5) { height: 66%; }
+    .building:nth-child(6) { height: 42%; background: #4d4b75; }
+    .building.gone { opacity: .13; transform: translateY(12px) rotate(8deg); }
+
+    .town-message { position: relative; z-index: 1; margin: 5px 0 13px; font-weight: 650; }
+
+    .health-track {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 15px;
+      border: 1px solid #ffffff4d;
+      border-radius: 99px;
+      background: #17152f99;
+    }
+
+    .health-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ffdf7c, #ff8b8b);
+      transition: width .25s ease;
+    }
+
+    .health-label { position: relative; z-index: 1; margin-top: 6px; font-size: .82rem; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .upgrade {
+      min-height: 90px;
+      padding: 12px;
+      border: 1px solid #ffffff20;
+      border-radius: 15px;
+      background: #ffffff0d;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .12s, background .12s, border-color .12s;
+    }
+
+    .upgrade:hover:not(:disabled) { transform: translateY(-2px); background: #ffffff18; border-color: #a99aff; }
+    .upgrade:active:not(:disabled) { transform: scale(.98); }
+    .upgrade:disabled { opacity: .48; cursor: not-allowed; }
+    .upgrade.primary { background: #7965d9; border-color: #ac9bff; text-align: center; }
+    .upgrade.primary:hover:not(:disabled) { background: #8a76ed; }
+    .upgrade-title { display: block; font-weight: 750; }
+    .upgrade-detail { display: block; margin-top: 5px; color: #c7c4df; font-size: .76rem; line-height: 1.4; }
+    .primary .upgrade-detail { color: #eeebff; }
+
+    .panel { padding: 15px 17px; }
+    .panel h2 { margin: 0 0 7px; font-size: 1rem; }
+    .panel p { margin: 0; color: #c2bfde; font-size: .88rem; line-height: 1.6; }
+    .toast { min-height: 25px; margin: 10px 0 0; color: #ffe18d; text-align: center; font-weight: 700; }
+
+    @keyframes hover {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-9px) rotate(3deg); }
+    }
+
+    @media (max-width: 560px) {
+      .game { width: min(100% - 20px, 760px); padding-top: 20px; }
+      .town { min-height: 278px; padding: 16px 12px; }
+      .scene { min-height: 147px; }
+      .alien { width: 94px; height: 94px; flex-basis: 94px; font-size: 3.6rem; }
+      .buildings { height: 106px; gap: 3px; }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .upgrade.primary { grid-column: 1 / -1; min-height: 66px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <header>
+      <h1>ワヤヤンの地球侵略計画</h1>
+      <p class="subtitle">町を壊して、宇宙一の侵略者をめざそう！</p>
+    </header>
+
+    <section class="stats" aria-label="侵略状況">
+      <div class="stat"><span class="stat-label">侵略した町</span><span class="stat-value" id="town-count">0</span></div>
+      <div class="stat"><span class="stat-label">侵略パワー</span><span class="stat-value" id="power">0</span></div>
+      <div class="stat"><span class="stat-label">自動攻撃</span><span class="stat-value" id="auto-power">0 / 秒</span></div>
+    </section>
+
+    <section class="town" aria-label="侵略中の町">
+      <span class="town-name" id="town-name">のどかな町</span>
+      <div class="scene">
+        <div class="alien" aria-label="ワヤヤン">👾</div>
+        <div class="buildings" id="buildings" aria-hidden="true">
+          <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
+          <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
+        </div>
+      </div>
+      <p class="town-message" id="town-message">ワヤヤンが町にあらわれた！</p>
+      <div class="health-track" role="progressbar" aria-label="町の残り体力" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <div class="health-fill" id="health-fill"></div>
+      </div>
+      <div class="health-label" id="health-label">町の元気 100%</div>
+    </section>
+
+    <p class="toast" id="toast" aria-live="polite"></p>
+
+    <section class="controls" aria-label="アクションと強化">
+      <button class="upgrade primary" id="attack-button">
+        <span class="upgrade-title">💥 ドカン！</span>
+        <span class="upgrade-detail" id="attack-detail">タップして攻撃</span>
+      </button>
+      <button class="upgrade" id="power-button">
+        <span class="upgrade-title">✨ ワヤヤン強化</span>
+        <span class="upgrade-detail" id="power-detail"></span>
+      </button>
+      <button class="upgrade" id="ally-button">
+        <span class="upgrade-title">🛸 なかま召喚</span>
+        <span class="upgrade-detail" id="ally-detail"></span>
+      </button>
+    </section>
+
+    <section class="panel">
+      <h2>ワヤヤンからひとこと</h2>
+      <p id="quip">「この星、ぜーんぶワヤヤンのもの！」</p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "wayayan-idle-game-v1";
+      const townNames = ["のどかな町", "ネオンタウン", "ロボットシティ", "雲の上の都", "月面基地", "地球防衛都市"];
+      const quips = [
+        "「この星、ぜーんぶワヤヤンのもの！」",
+        "「いいねいいね、侵略日和だね！」",
+        "「あとでちゃんと直す……たぶん！」",
+        "「ワヤヤンの力、見せちゃうよー！」",
+        "「次の町はどんなところかな？」"
+      ];
+      const defaults = {
+        towns: 0,
+        power: 0,
+        damage: 0,
+        tapLevel: 0,
+        allyLevel: 0,
+        lastSavedAt: Date.now()
+      };
+      let state = loadState();
+      let toastTimer;
+
+      const elements = {
+        townCount: document.getElementById("town-count"),
+        power: document.getElementById("power"),
+        autoPower: document.getElementById("auto-power"),
+        townName: document.getElementById("town-name"),
+        townMessage: document.getElementById("town-message"),
+        healthFill: document.getElementById("health-fill"),
+        healthTrack: document.querySelector(".health-track"),
+        healthLabel: document.getElementById("health-label"),
+        buildings: [...document.querySelectorAll(".building")],
+        attackButton: document.getElementById("attack-button"),
+        attackDetail: document.getElementById("attack-detail"),
+        powerButton: document.getElementById("power-button"),
+        powerDetail: document.getElementById("power-detail"),
+        allyButton: document.getElementById("ally-button"),
+        allyDetail: document.getElementById("ally-detail"),
+        toast: document.getElementById("toast"),
+        quip: document.getElementById("quip")
+      };
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!saved || !Number.isFinite(saved.towns) || !Number.isFinite(saved.power)) return { ...defaults };
+          const normalized = {
+            towns: Math.max(0, Math.floor(saved.towns)),
+            power: Math.max(0, saved.power),
+            damage: Math.max(0, Number.isFinite(saved.damage) ? saved.damage : 0),
+            tapLevel: Math.max(0, Math.floor(saved.tapLevel) || 0),
+            allyLevel: Math.max(0, Math.floor(saved.allyLevel) || 0),
+            lastSavedAt: Number.isFinite(saved.lastSavedAt) ? saved.lastSavedAt : Date.now()
+          };
+          const awaySeconds = Math.min(8 * 60 * 60, Math.max(0, (Date.now() - normalized.lastSavedAt) / 1000));
+          const awayPower = awaySeconds * normalized.allyLevel;
+          normalized.power += awayPower;
+          normalized.damage += awayPower;
+          while (normalized.damage >= 50 + normalized.towns * 25) {
+            normalized.damage -= 50 + normalized.towns * 25;
+            normalized.towns += 1;
+          }
+          return normalized;
+        } catch (error) {
+          console.warn("セーブデータを読み込めませんでした。新しく開始します。", error);
+          return { ...defaults };
+        }
+      }
+
+      function saveState() {
+        state.lastSavedAt = Date.now();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function townHealth() {
+        return 50 + state.towns * 25;
+      }
+
+      function tapDamage() {
+        return 1 + state.tapLevel * 2;
+      }
+
+      function powerCost() {
+        return Math.floor(10 * Math.pow(1.6, state.tapLevel));
+      }
+
+      function allyCost() {
+        return Math.floor(20 * Math.pow(1.7, state.allyLevel));
+      }
+
+      function format(number) {
+        return Math.floor(number).toLocaleString("ja-JP");
+      }
+
+      function showToast(message) {
+        elements.toast.textContent = message;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { elements.toast.textContent = ""; }, 2200);
+      }
+
+      function attack(amount) {
+        state.power += amount;
+        state.damage += amount;
+        let conqueredTown = false;
+        while (state.damage >= townHealth()) {
+          state.damage -= townHealth();
+          state.towns += 1;
+          conqueredTown = true;
+        }
+        if (conqueredTown) {
+          elements.quip.textContent = quips[state.towns % quips.length];
+          showToast(`${state.towns > 1 ? "町を連続侵略！" : "町を侵略！"} ワヤヤンの勝利！`);
+        }
+        render();
+      }
+
+      function render() {
+        const hp = townHealth();
+        const remaining = Math.max(0, hp - state.damage);
+        const progress = Math.min(100, (state.damage / hp) * 100);
+        const ruined = Math.min(6, Math.floor(progress / (100 / 6)));
+        const nextPowerCost = powerCost();
+        const nextAllyCost = allyCost();
+
+        elements.townCount.textContent = format(state.towns);
+        elements.power.textContent = format(state.power);
+        elements.autoPower.textContent = `${format(state.allyLevel)} / 秒`;
+        elements.townName.textContent = townNames[Math.min(state.towns, townNames.length - 1)];
+        elements.townMessage.textContent = state.power > 0 ? "町がどんどん壊れていく……！" : "ワヤヤンが町にあらわれた！";
+        elements.healthFill.style.width = `${100 - progress}%`;
+        elements.healthLabel.textContent = `町の元気 ${Math.ceil((remaining / hp) * 100)}%`;
+        elements.healthTrack.setAttribute("aria-valuenow", String(Math.ceil((remaining / hp) * 100)));
+        elements.buildings.forEach((building, index) => building.classList.toggle("gone", index < ruined));
+        elements.attackDetail.textContent = `タップで ${format(tapDamage())} パワー`;
+        elements.powerDetail.textContent = `攻撃力 +2　｜　${format(nextPowerCost)} パワー`;
+        elements.allyDetail.textContent = `毎秒 +1 パワー　｜　${format(nextAllyCost)} パワー`;
+        elements.powerButton.disabled = state.power < nextPowerCost;
+        elements.allyButton.disabled = state.power < nextAllyCost;
+      }
+
+      elements.attackButton.addEventListener("click", () => attack(tapDamage()));
+      elements.powerButton.addEventListener("click", () => {
+        const cost = powerCost();
+        if (state.power < cost) return;
+        state.power -= cost;
+        state.tapLevel += 1;
+        showToast("ワヤヤンの攻撃力がアップ！");
+        render();
+      });
+      elements.allyButton.addEventListener("click", () => {
+        const cost = allyCost();
+        if (state.power < cost) return;
+        state.power -= cost;
+        state.allyLevel += 1;
+        showToast("なかまが加わった！");
+        render();
+      });
+
+      setInterval(() => {
+        if (state.allyLevel > 0) attack(state.allyLevel);
+        else render();
+      }, 1000);
+      setInterval(saveState, 5000);
+      window.addEventListener("beforeunload", saveState);
+      render();
+      saveState();
+    })();
+  </script>
+</body>
+</html>
