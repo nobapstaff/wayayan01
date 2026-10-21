@@ -19,9 +19,12 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 50% 0%, #38316e 0, transparent 54%),
-        #17152f;
+      background-color: #182334;
+      background-image:
+        linear-gradient(90deg, #ffffff08 1px, transparent 1px),
+        linear-gradient(#ffffff08 1px, transparent 1px),
+        linear-gradient(180deg, #243b48, #182334);
+      background-size: 24px 24px, 24px 24px, auto;
     }
 
     button { font: inherit; }
@@ -50,10 +53,10 @@
     }
 
     .stat, .panel {
-      border: 1px solid #ffffff1b;
-      border-radius: 16px;
-      background: #ffffff0b;
-      box-shadow: 0 8px 28px #08071838;
+      border: 2px solid #50634c;
+      border-radius: 3px;
+      background: #263b37;
+      box-shadow: 0 4px 0 #101a1f;
     }
 
     .stat { padding: 12px 8px; text-align: center; }
@@ -65,34 +68,51 @@
       overflow: hidden;
       min-height: 300px;
       padding: 20px;
-      border: 1px solid #ffffff25;
-      border-radius: 22px;
-      background: linear-gradient(180deg, #413c79 0%, #7877ae 68%, #58538b 100%);
+      border: 3px solid #435f3f;
+      border-radius: 3px;
+      background:
+        linear-gradient(90deg, #ffffff0b 1px, transparent 1px),
+        linear-gradient(#ffffff0b 1px, transparent 1px),
+        linear-gradient(180deg, transparent 0 73%, #78bd48 73% 79%, #9a693f 79% 100%),
+        linear-gradient(180deg, #75b9df 0%, #b3d8dc 72%, #78bd48 72%);
+      background-size: 24px 24px, 24px 24px, auto, auto;
+      image-rendering: pixelated;
       text-align: center;
     }
 
     .town::before, .town::after {
       position: absolute;
       content: "";
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 54px 30px #ffffffa6, 128px -6px #ffffffb8, 230px 44px #fff,
-        334px 9px #ffffffb8, 438px 45px #fff, 548px 3px #ffffffa6, 615px 50px #fff;
-      opacity: .8;
+      z-index: 0;
     }
 
-    .town::before { top: 28px; left: 9%; }
-    .town::after { top: 75px; left: 22%; transform: scale(.7); }
+    .town::before {
+      top: 52px;
+      left: 12%;
+      width: 24px;
+      height: 8px;
+      background: #f4f4dc;
+      box-shadow: 8px -8px 0 #f4f4dc, 16px 0 0 #f4f4dc, 48px 24px 0 #f4f4dc,
+        56px 16px 0 #f4f4dc, 64px 24px 0 #f4f4dc;
+    }
+
+    .town::after {
+      right: 14%;
+      bottom: 21%;
+      width: 18px;
+      height: 26px;
+      background: #4d7b3d;
+      box-shadow: 0 -8px 0 #69964a, 7px -13px 0 #69964a, 16px -5px 0 #47713b;
+    }
 
     .town-name {
       position: relative;
       z-index: 1;
       display: inline-block;
       padding: 6px 13px;
-      border-radius: 99px;
-      background: #17152f7a;
+      border: 2px solid #415b3a;
+      border-radius: 2px;
+      background: #273b32e8;
       font-size: .86rem;
       font-weight: 700;
     }
@@ -100,22 +120,24 @@
     .scene {
       position: relative;
       z-index: 1;
-      display: flex;
-      min-height: 158px;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(12px, 7vw, 42px);
-      padding-top: 15px;
+      height: 220px;
+      perspective: 700px;
     }
 
     .alien {
-      position: relative;
+      position: absolute;
+      z-index: 2;
+      top: 28px;
+      left: 24px;
       width: 124px;
       height: 124px;
-      flex: 0 0 124px;
       border-radius: 50%;
-      background: #8bf0c5;
-      box-shadow: 0 0 35px #88f7c579, inset 0 -8px #00000012;
+      background:
+        radial-gradient(ellipse at 30% 22%, #effff3 0 4%, #b9ffe0 12%, transparent 30%),
+        radial-gradient(ellipse at 35% 30%, #a6f5d2 0, #55bd97 58%, #267d69 100%);
+      box-shadow: inset -12px -14px 22px #154e49a6, inset 7px 8px 14px #ffffff78,
+        7px 12px 0 #254d4b99;
+      transform-style: preserve-3d;
       animation: hover 2.4s ease-in-out infinite;
       user-select: none;
     }
@@ -127,7 +149,8 @@
       width: 4px;
       height: 31px;
       border-radius: 5px;
-      background: #d4ffe8;
+      background: linear-gradient(90deg, #4e9d82, #d4ffe8 45%, #72c5a4);
+      box-shadow: 2px 2px 0 #276850;
       transform-origin: bottom;
     }
 
@@ -138,7 +161,8 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #d4ffe8;
+      background: #e9fff0;
+      box-shadow: 0 1px 5px #e9fff0;
       content: "";
     }
 
@@ -156,7 +180,9 @@
       justify-content: center;
       gap: 12px;
       border-radius: 50%;
-      background: #293149;
+      background: linear-gradient(145deg, #566480, #20283b 68%);
+      box-shadow: inset 3px 4px 4px #101827, inset -2px -2px 3px #8792a0,
+        2px 4px 3px #164b43aa;
       transform: translateX(-50%);
     }
 
@@ -164,21 +190,22 @@
       width: 7px;
       height: 9px;
       border-radius: 50%;
-      background: #fff;
-      box-shadow: inset -2px -1px #a4b8c9;
+      background: radial-gradient(circle at 35% 30%, #fff 0 20%, #d8f4ff 35%, #7199ad 100%);
+      box-shadow: 1px 2px 2px #131d2b;
     }
 
     .alien-arm, .alien-leg {
       position: absolute;
       z-index: 1;
-      background: #303345;
+      background: linear-gradient(135deg, #60677c, #292d3d 65%, #141927);
+      box-shadow: inset 2px 3px 4px #ffffff52, 2px 4px 3px #00000055;
     }
 
     .alien-arm {
       top: 70px;
       width: 37px;
       height: 18px;
-      border-radius: 99px;
+      border-radius: 6px;
     }
 
     .alien-arm-left { left: -17px; transform: rotate(35deg); }
@@ -195,11 +222,34 @@
     .alien-leg-right { right: 27px; transform: rotate(-20deg); }
 
     .voxel-city {
-      --block-size: 11px;
+      --block-size: 15px;
       display: flex;
-      height: 128px;
+      position: absolute;
+      right: 7%;
+      bottom: 12px;
+      height: 178px;
       align-items: end;
       gap: 4px;
+      transform: rotateX(5deg);
+      transform-style: preserve-3d;
+    }
+
+    .voxel-city::before {
+      position: absolute;
+      z-index: -1;
+      right: -12%;
+      bottom: 0;
+      left: -12%;
+      height: 30px;
+      border: 2px solid #526f3e;
+      background-color: #83ad4e;
+      background-image:
+        linear-gradient(90deg, #405c3890 1px, transparent 1px),
+        linear-gradient(#405c3890 1px, transparent 1px);
+      background-size: var(--block-size) var(--block-size);
+      content: "";
+      transform: perspective(180px) rotateX(55deg);
+      transform-origin: bottom;
     }
 
     .building {
@@ -207,26 +257,66 @@
       align-content: end;
       gap: 1px;
       padding: 0 1px;
+      transform-style: preserve-3d;
     }
 
     .block {
+      position: relative;
       width: var(--block-size);
       height: var(--block-size);
-      border: 1px solid #ffffff25;
-      background: #c68156;
-      box-shadow: inset 2px 2px #ffffff24, inset -3px -3px #00000024;
+      transform-style: preserve-3d;
       transition: opacity .18s, transform .18s;
     }
 
-    .building:nth-child(3n + 2) .block { background: #787f8e; }
-    .building:nth-child(3n) .block { background: #bd9a62; }
-    .block.roof { background: #5d6478; }
-    .block.window {
+    .block-face {
+      position: absolute;
+      display: block;
+      border: 1px solid #ffffff2b;
+      backface-visibility: hidden;
+    }
+
+    .face-front {
+      inset: 0;
+      transform: translateZ(calc(var(--block-size) / 2));
+      background: #c68156;
+      box-shadow: inset 2px 2px #ffffff35, inset -3px -3px #00000035;
+    }
+
+    .face-top {
+      top: 0;
+      left: 0;
+      width: var(--block-size);
+      height: calc(var(--block-size) / 2);
+      transform: translateZ(calc(var(--block-size) / 2)) rotateX(-90deg);
+      transform-origin: top;
+      background: #e0a477;
+    }
+
+    .face-right {
+      top: 0;
+      right: 0;
+      width: calc(var(--block-size) / 2);
+      height: var(--block-size);
+      transform: translateZ(calc(var(--block-size) / 2)) rotateY(90deg);
+      transform-origin: right;
+      background: #895438;
+    }
+
+    .building:nth-child(3n + 2) .face-front { background: #787f8e; }
+    .building:nth-child(3n + 2) .face-top { background: #aeb6c2; }
+    .building:nth-child(3n + 2) .face-right { background: #4e5667; }
+    .building:nth-child(3n) .face-front { background: #bd9a62; }
+    .building:nth-child(3n) .face-top { background: #e0c58d; }
+    .building:nth-child(3n) .face-right { background: #816a45; }
+    .block.roof .face-front { background: #5d6478; }
+    .block.roof .face-top { background: #929bad; }
+    .block.roof .face-right { background: #3b4357; }
+    .block.window .face-front {
       background: linear-gradient(90deg, #d9c582 0 26%, #525b70 27% 72%, #d9c582 73%);
     }
     .block.destroyed {
       opacity: 0;
-      transform: translateY(8px) scale(.55);
+      transform: translate3d(8px, 10px, -12px) rotateX(35deg) rotateZ(18deg) scale(.55);
     }
 
     .town-message { position: relative; z-index: 1; margin: 5px 0 13px; font-weight: 650; }
@@ -236,16 +326,16 @@
       z-index: 1;
       overflow: hidden;
       height: 15px;
-      border: 1px solid #ffffff4d;
-      border-radius: 99px;
-      background: #17152f99;
+      border: 2px solid #263c32;
+      border-radius: 2px;
+      background: #24333b;
     }
 
     .health-fill {
       width: 100%;
       height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #ffdf7c, #ff8b8b);
+      border-radius: 0;
+      background: repeating-linear-gradient(90deg, #f1d66d 0 12px, #e99655 12px 24px);
       transition: width .25s ease;
     }
 
@@ -261,20 +351,20 @@
     .upgrade {
       min-height: 90px;
       padding: 12px;
-      border: 1px solid #ffffff20;
-      border-radius: 15px;
-      background: #ffffff0d;
+      border: 2px solid #536848;
+      border-radius: 3px;
+      background: #263b37;
       color: white;
       text-align: left;
       cursor: pointer;
       transition: transform .12s, background .12s, border-color .12s;
     }
 
-    .upgrade:hover:not(:disabled) { transform: translateY(-2px); background: #ffffff18; border-color: #a99aff; }
+    .upgrade:hover:not(:disabled) { transform: translateY(-2px); background: #354d3d; border-color: #b2c96a; }
     .upgrade:active:not(:disabled) { transform: scale(.98); }
     .upgrade:disabled { opacity: .48; cursor: not-allowed; }
-    .upgrade.primary { background: #7965d9; border-color: #ac9bff; text-align: center; }
-    .upgrade.primary:hover:not(:disabled) { background: #8a76ed; }
+    .upgrade.primary { background: #47783f; border-color: #8fb764; text-align: center; }
+    .upgrade.primary:hover:not(:disabled) { background: #588f48; }
     .upgrade-title { display: block; font-weight: 750; }
     .upgrade-detail { display: block; margin-top: 5px; color: #c7c4df; font-size: .76rem; line-height: 1.4; }
     .primary .upgrade-detail { color: #eeebff; }
@@ -282,7 +372,48 @@
     .panel { padding: 15px 17px; }
     .panel h2 { margin: 0 0 7px; font-size: 1rem; }
     .panel p { margin: 0; color: #c2bfde; font-size: .88rem; line-height: 1.6; }
-    .toast { min-height: 25px; margin: 10px 0 0; color: #ffe18d; text-align: center; font-weight: 700; }
+    .toast { min-height: 25px; margin: 10px 0 0; color: #f4dc78; text-align: center; font-weight: 700; }
+    .key-hint { margin: 8px 0 0; color: #c6d4b0; font-size: .78rem; text-align: center; }
+
+    .movement-pad {
+      display: grid;
+      width: max-content;
+      grid-template-columns: repeat(3, 42px);
+      grid-template-rows: repeat(2, 38px);
+      gap: 4px;
+      margin: 8px auto 2px;
+      touch-action: none;
+    }
+
+    .movement-pad button {
+      border: 2px solid #718957;
+      border-radius: 3px;
+      background: #314638;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 800;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .movement-pad button:active { background: #5b8248; }
+    .movement-pad button[data-move="ArrowUp"] { grid-column: 2; grid-row: 1; }
+    .movement-pad button[data-move="ArrowLeft"] { grid-column: 1; grid-row: 2; }
+    .movement-pad button[data-move="ArrowDown"] { grid-column: 2; grid-row: 2; }
+    .movement-pad button[data-move="ArrowRight"] { grid-column: 3; grid-row: 2; }
+
+    kbd {
+      display: inline-block;
+      min-width: 56px;
+      padding: 3px 8px;
+      border: 2px solid #a5b278;
+      border-radius: 2px;
+      background: #263b37;
+      color: #fff;
+      font: inherit;
+      font-weight: 750;
+      box-shadow: 0 2px 0 #101a1f;
+    }
 
     @keyframes hover {
       0%, 100% { transform: translateY(0) rotate(-3deg); }
@@ -292,8 +423,9 @@
     @media (max-width: 560px) {
       .game { width: min(100% - 20px, 760px); padding-top: 20px; }
       .town { min-height: 278px; padding: 16px 12px; }
-      .scene { min-height: 147px; gap: 8px; }
-      .alien { width: 94px; height: 94px; flex-basis: 94px; }
+      .scene { height: 185px; }
+      .alien { width: 94px; height: 94px; }
+      .voxel-city { --block-size: 11px; right: 4%; bottom: 10px; height: 132px; }
       .antenna { top: -13px; height: 25px; }
       .antenna-left { left: 32px; }
       .antenna-right { right: 32px; }
@@ -305,7 +437,7 @@
       .alien-leg { bottom: -5px; width: 19px; height: 16px; }
       .alien-leg-left { left: 20px; }
       .alien-leg-right { right: 20px; }
-      .voxel-city { --block-size: 8px; height: 106px; gap: 1px; }
+      .voxel-city { gap: 1px; }
       .controls { grid-template-columns: 1fr 1fr; }
       .upgrade.primary { grid-column: 1 / -1; min-height: 66px; }
     }
@@ -319,7 +451,7 @@
   <main class="game">
     <header>
       <h1>ワヤヤンの地球侵略計画</h1>
-      <p class="subtitle">町を壊して、宇宙一の侵略者をめざそう！</p>
+      <p class="subtitle">ブロックの街を壊して、宇宙一の侵略者をめざそう！</p>
     </header>
 
     <section class="stats" aria-label="侵略状況">
@@ -353,8 +485,8 @@
 
     <section class="controls" aria-label="アクションと強化">
       <button class="upgrade primary" id="attack-button">
-        <span class="upgrade-title">💥 ドカン！</span>
-        <span class="upgrade-detail" id="attack-detail">タップして攻撃</span>
+        <span class="upgrade-title"><kbd>SPACE</kbd> 💥 ドカン！</span>
+        <span class="upgrade-detail" id="attack-detail">キーまたはボタンで攻撃</span>
       </button>
       <button class="upgrade" id="power-button">
         <span class="upgrade-title">✨ ワヤヤン強化</span>
@@ -365,6 +497,13 @@
         <span class="upgrade-detail" id="ally-detail"></span>
       </button>
     </section>
+    <div class="movement-pad" aria-label="ワヤヤンの移動">
+      <button type="button" data-move="ArrowUp" aria-label="上へ移動">▲</button>
+      <button type="button" data-move="ArrowLeft" aria-label="左へ移動">◀</button>
+      <button type="button" data-move="ArrowDown" aria-label="下へ移動">▼</button>
+      <button type="button" data-move="ArrowRight" aria-label="右へ移動">▶</button>
+    </div>
+    <p class="key-hint">ワヤヤンは自動で歩き回ります。矢印キー / WASD で操作 ・ <kbd>SPACE</kbd> で攻撃</p>
 
     <section class="panel">
       <h2>ワヤヤンからひとこと</h2>
@@ -402,6 +541,15 @@
       let state = loadState();
       let toastTimer;
       const cityBlocks = createCity();
+      const movement = {
+        x: 24,
+        y: 28,
+        keys: new Set(),
+        directionX: 1,
+        directionY: 0,
+        lastFrame: 0,
+        nextTurnAt: 0
+      };
 
       const elements = {
         townCount: document.getElementById("town-count"),
@@ -412,7 +560,10 @@
         healthFill: document.getElementById("health-fill"),
         healthTrack: document.querySelector(".health-track"),
         healthLabel: document.getElementById("health-label"),
+        scene: document.querySelector(".scene"),
+        alien: document.querySelector(".alien"),
         cityBlocks,
+        movementButtons: [...document.querySelectorAll(".movement-pad button")],
         attackButton: document.getElementById("attack-button"),
         attackDetail: document.getElementById("attack-detail"),
         powerButton: document.getElementById("power-button"),
@@ -447,6 +598,11 @@
               else if ((row + column + buildingIndex) % 3 === 0) block.classList.add("window");
               block.style.gridColumn = String(column);
               block.style.gridRow = String(height - row + 1);
+              for (const face of ["front", "top", "right"]) {
+                const faceElement = document.createElement("span");
+                faceElement.className = `block-face face-${face}`;
+                block.append(faceElement);
+              }
               building.append(block);
               blocks.push(block);
             }
@@ -553,7 +709,68 @@
         elements.allyButton.disabled = state.power < nextAllyCost;
       }
 
+      function moveAlien(timestamp) {
+        const elapsed = movement.lastFrame ? Math.min((timestamp - movement.lastFrame) / 1000, 0.05) : 0;
+        movement.lastFrame = timestamp;
+        let horizontal = 0;
+        let vertical = 0;
+        if (movement.keys.has("ArrowLeft") || movement.keys.has("KeyA")) horizontal -= 1;
+        if (movement.keys.has("ArrowRight") || movement.keys.has("KeyD")) horizontal += 1;
+        if (movement.keys.has("ArrowUp") || movement.keys.has("KeyW")) vertical -= 1;
+        if (movement.keys.has("ArrowDown") || movement.keys.has("KeyS")) vertical += 1;
+
+        if (horizontal === 0 && vertical === 0) {
+          if (timestamp >= movement.nextTurnAt) {
+            const angle = Math.random() * Math.PI * 2;
+            movement.directionX = Math.cos(angle);
+            movement.directionY = Math.sin(angle);
+            movement.nextTurnAt = timestamp + 1200 + Math.random() * 1800;
+          }
+          horizontal = movement.directionX;
+          vertical = movement.directionY;
+        }
+
+        const distance = 75 * elapsed / (Math.hypot(horizontal, vertical) || 1);
+        movement.x += horizontal * distance;
+        movement.y += vertical * distance;
+        const maxX = Math.max(0, elements.scene.clientWidth - elements.alien.offsetWidth);
+        const maxY = Math.max(0, elements.scene.clientHeight - elements.alien.offsetHeight);
+        if (movement.x < 0 || movement.x > maxX) movement.directionX *= -1;
+        if (movement.y < 0 || movement.y > maxY) movement.directionY *= -1;
+        movement.x = Math.max(0, Math.min(movement.x, maxX));
+        movement.y = Math.max(0, Math.min(movement.y, maxY));
+        elements.alien.style.left = `${movement.x}px`;
+        elements.alien.style.top = `${movement.y}px`;
+        requestAnimationFrame(moveAlien);
+      }
+
       elements.attackButton.addEventListener("click", () => attack(tapDamage()));
+      document.addEventListener("keydown", (event) => {
+        if (event.target instanceof Element && event.target.closest("input, textarea, select, [contenteditable='true']")) return;
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "KeyA", "KeyD", "KeyW", "KeyS"].includes(event.code)) {
+          event.preventDefault();
+          movement.keys.add(event.code);
+          return;
+        }
+        if (event.code !== "Space" || event.repeat) return;
+        if (event.target instanceof Element && event.target.closest("button, a")) return;
+        event.preventDefault();
+        attack(tapDamage());
+      });
+      document.addEventListener("keyup", (event) => movement.keys.delete(event.code));
+      window.addEventListener("blur", () => movement.keys.clear());
+      elements.movementButtons.forEach((button) => {
+        const key = button.dataset.move;
+        button.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
+          button.setPointerCapture(event.pointerId);
+          movement.keys.add(key);
+        });
+        const stopMovement = () => movement.keys.delete(key);
+        button.addEventListener("pointerup", stopMovement);
+        button.addEventListener("pointercancel", stopMovement);
+        button.addEventListener("lostpointercapture", stopMovement);
+      });
       elements.powerButton.addEventListener("click", () => {
         const cost = powerCost();
         if (state.power < cost) return;
@@ -578,6 +795,7 @@
       setInterval(saveState, 5000);
       window.addEventListener("beforeunload", saveState);
       render();
+      requestAnimationFrame(moveAlien);
       saveState();
     })();
   </script>
