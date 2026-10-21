@@ -121,13 +121,126 @@
       position: relative;
       z-index: 1;
       height: 350px;
+      overflow: hidden;
       perspective: 700px;
+    }
+
+    .road {
+      position: absolute;
+      right: -20px;
+      bottom: 0;
+      left: -20px;
+      height: 82px;
+      border-top: 12px solid #8cae59;
+      background:
+        linear-gradient(180deg, transparent 0 49%, #e6d69b 49% 53%, transparent 53%),
+        repeating-linear-gradient(90deg, transparent 0 54px, #e6d69b 54px 82px, transparent 82px 132px),
+        #5a6060;
+      background-size: auto, auto 5px, auto;
+      background-position: center, center 58%, center;
+      background-repeat: no-repeat, repeat-x, no-repeat;
+      box-shadow: inset 0 7px #414b4b;
+    }
+
+    .human {
+      position: absolute;
+      z-index: 3;
+      width: 50px;
+      height: 82px;
+      filter: drop-shadow(0 4px 2px #17211fb0);
+    }
+
+    .human:not(.evacuating) {
+      animation: human-walk .42s steps(2, end) infinite;
+    }
+
+    .human-head {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      width: 26px;
+      height: 26px;
+      border: 2px solid #754329;
+      background: linear-gradient(135deg, #ffd09a, #d98c57);
+      box-shadow: inset 4px 3px #ffe2b3, 2px 3px #6d472f;
+    }
+
+    .human-head::before {
+      position: absolute;
+      top: -4px;
+      left: -2px;
+      width: 24px;
+      height: 9px;
+      background: linear-gradient(90deg, #553b2c, #302b2b);
+      content: "";
+    }
+
+    .human-eye {
+      position: absolute;
+      top: 12px;
+      width: 4px;
+      height: 5px;
+      background: #26323a;
+      box-shadow: 1px 1px #fff;
+    }
+
+    .human-eye-left { left: 5px; }
+    .human-eye-right { right: 5px; }
+
+    .human-body {
+      position: absolute;
+      top: 26px;
+      left: 8px;
+      width: 34px;
+      height: 31px;
+      border: 2px solid #793e25;
+      background: linear-gradient(90deg, #f48a45 0 48%, #d95d36 49% 100%);
+      box-shadow: inset 4px 3px #ffc16b, inset -4px -3px #9e3f35;
+    }
+
+    .human-arm, .human-leg {
+      position: absolute;
+      border: 2px solid #5b3e2e;
+    }
+
+    .human-arm {
+      top: 29px;
+      width: 10px;
+      height: 26px;
+      background: linear-gradient(90deg, #ffd09a, #d98c57);
+    }
+
+    .human-arm-left { left: 0; transform: rotate(8deg); }
+    .human-arm-right { right: 0; transform: rotate(-8deg); }
+
+    .human-leg {
+      top: 56px;
+      width: 14px;
+      height: 22px;
+      background: linear-gradient(90deg, #45536a, #29374c);
+      box-shadow: inset 3px 1px #77859a;
+    }
+
+    .human-leg-left { left: 10px; }
+    .human-leg-right { right: 10px; }
+    .human.evacuating {
+      opacity: 0;
+      animation: human-escape .18s ease-in both;
+    }
+
+    @keyframes human-walk {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -4px; }
+    }
+
+    @keyframes human-escape {
+      to { opacity: 0; translate: 0 -25px; scale: .65; }
     }
 
     .alien {
       position: absolute;
       z-index: 2;
-      top: 130px;
+      top: 214px;
       left: 24px;
       width: 124px;
       height: 124px;
@@ -226,7 +339,7 @@
       display: flex;
       position: absolute;
       right: 7%;
-      bottom: 12px;
+      bottom: 88px;
       height: 280px;
       align-items: end;
       gap: 4px;
@@ -251,6 +364,53 @@
       transform: perspective(180px) rotateX(55deg);
       transform-origin: bottom;
     }
+
+    .laser-layer {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .laser-beam {
+      stroke: #a6fff2;
+      stroke-width: 4px;
+      stroke-linecap: square;
+      opacity: 0;
+      filter: drop-shadow(0 0 4px #5effef) drop-shadow(0 0 10px #20e5ff);
+    }
+
+    .laser-layer.firing .laser-beam {
+      opacity: 1;
+      animation: beam-flash .32s ease-out both;
+    }
+
+    .aim-reticle {
+      position: absolute;
+      z-index: 5;
+      width: 26px;
+      height: 26px;
+      border: 2px solid #ff6969;
+      box-shadow: 0 0 6px #ff4c4c, inset 0 0 5px #ff4c4c80;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .aim-reticle::before, .aim-reticle::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: #ffe5e5;
+      content: "";
+      transform: translate(-50%, -50%);
+    }
+
+    .aim-reticle::before { width: 34px; height: 2px; }
+    .aim-reticle::after { width: 2px; height: 34px; }
+    .aim-reticle.firing { animation: reticle-pulse .32s ease-out; }
 
     .building {
       display: grid;
@@ -420,12 +580,24 @@
       50% { transform: translateY(-9px) rotate(3deg); }
     }
 
+    @keyframes beam-flash {
+      0% { opacity: 0; stroke-width: 1px; }
+      25% { opacity: 1; stroke-width: 7px; }
+      100% { opacity: .8; stroke-width: 3px; }
+    }
+
+    @keyframes reticle-pulse {
+      50% { scale: 1.35; }
+    }
+
     @media (max-width: 560px) {
       .game { width: min(100% - 20px, 760px); padding-top: 20px; }
       .town { min-height: 380px; padding: 16px 12px; }
       .scene { height: 290px; }
-      .alien { width: 94px; height: 94px; }
-      .voxel-city { --block-size: 11px; right: 4%; bottom: 10px; height: 210px; }
+      .alien { top: 182px; width: 94px; height: 94px; }
+      .road { height: 62px; border-top-width: 9px; }
+      .voxel-city { --block-size: 11px; right: 4%; bottom: 66px; height: 210px; }
+      .human { scale: .9; }
       .antenna { top: -13px; height: 25px; }
       .antenna-left { left: 32px; }
       .antenna-right { right: 32px; }
@@ -455,9 +627,9 @@
     </header>
 
     <section class="stats" aria-label="侵略状況">
-      <div class="stat"><span class="stat-label">侵略した町</span><span class="stat-value" id="town-count">0</span></div>
+      <div class="stat"><span class="stat-label">撃退した人</span><span class="stat-value" id="town-count">0</span></div>
       <div class="stat"><span class="stat-label">侵略パワー</span><span class="stat-value" id="power">0</span></div>
-      <div class="stat"><span class="stat-label">自動攻撃</span><span class="stat-value" id="auto-power">0 / 秒</span></div>
+      <div class="stat"><span class="stat-label">自動パワー</span><span class="stat-value" id="auto-power">0 / 秒</span></div>
     </section>
 
     <section class="town" aria-label="侵略中の町">
@@ -473,6 +645,12 @@
           <span class="alien-leg alien-leg-right"></span>
         </div>
         <div class="voxel-city" id="voxel-city" aria-hidden="true"></div>
+        <div class="road" aria-hidden="true"></div>
+        <div id="people" aria-label="道を歩く人たち"></div>
+        <svg class="laser-layer" aria-hidden="true" preserveAspectRatio="none">
+          <line class="laser-beam" id="laser-beam"></line>
+        </svg>
+        <div class="aim-reticle" id="aim-reticle" aria-hidden="true"></div>
       </div>
       <p class="town-message" id="town-message">ワヤヤンが町にあらわれた！</p>
       <div class="health-track" role="progressbar" aria-label="町の残り体力" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -485,7 +663,7 @@
 
     <section class="controls" aria-label="アクションと強化">
       <button class="upgrade primary" id="attack-button">
-        <span class="upgrade-title"><kbd>SPACE</kbd> 💥 ドカン！</span>
+        <span class="upgrade-title"><kbd>SPACE</kbd> 🔦 ビーム</span>
         <span class="upgrade-detail" id="attack-detail">キーまたはボタンで攻撃</span>
       </button>
       <button class="upgrade" id="power-button">
@@ -503,7 +681,7 @@
       <button type="button" data-move="ArrowDown" aria-label="下へ移動">▼</button>
       <button type="button" data-move="ArrowRight" aria-label="右へ移動">▶</button>
     </div>
-    <p class="key-hint">ワヤヤンは自動で歩き回ります。矢印キー / WASD で操作 ・ <kbd>SPACE</kbd> で攻撃</p>
+    <p class="key-hint">道に現れる人を2秒ごとのビームで撃退。矢印キー / WASD で移動</p>
 
     <section class="panel">
       <h2>ワヤヤンからひとこと</h2>
@@ -514,14 +692,6 @@
   <script>
     (() => {
       const STORAGE_KEY = "wayayan-idle-game-v1";
-      const townNames = ["のどかな町", "ネオンタウン", "ロボットシティ", "雲の上の都", "月面基地", "地球防衛都市"];
-      const quips = [
-        "「この星、ぜーんぶワヤヤンのもの！」",
-        "「いいねいいね、侵略日和だね！」",
-        "「あとでちゃんと直す……たぶん！」",
-        "「ワヤヤンの力、見せちゃうよー！」",
-        "「次の町はどんなところかな？」"
-      ];
       const buildingShapes = [
         { width: 3, height: 4 },
         { width: 3, height: 6 },
@@ -531,24 +701,23 @@
         { width: 3, height: 3 }
       ];
       const defaults = {
-        towns: 0,
+        defeated: 0,
         power: 0,
-        damage: 0,
         tapLevel: 0,
         allyLevel: 0,
         lastSavedAt: Date.now()
       };
       let state = loadState();
       let toastTimer;
-      const cityBlocks = createCity();
+      createCity();
+      const people = [];
       const movement = {
         x: 24,
-        y: 130,
+        y: 214,
         keys: new Set(),
         directionX: 1,
-        directionY: 0,
-        lastFrame: 0,
-        nextTurnAt: 0
+        targetPerson: null,
+        lastFrame: 0
       };
 
       const elements = {
@@ -562,7 +731,11 @@
         healthLabel: document.getElementById("health-label"),
         scene: document.querySelector(".scene"),
         alien: document.querySelector(".alien"),
-        cityBlocks,
+        people: document.getElementById("people"),
+        voxelCity: document.getElementById("voxel-city"),
+        laserLayer: document.querySelector(".laser-layer"),
+        laserBeam: document.getElementById("laser-beam"),
+        aimReticle: document.getElementById("aim-reticle"),
         movementButtons: [...document.querySelectorAll(".movement-pad button")],
         attackButton: document.getElementById("attack-button"),
         attackDetail: document.getElementById("attack-detail"),
@@ -576,7 +749,6 @@
 
       function createCity() {
         const city = document.getElementById("voxel-city");
-        const blocks = [];
         const maxHeight = Math.max(...buildingShapes.map(({ height }) => height));
 
         buildingShapes.forEach(({ width, height }, buildingIndex) => {
@@ -594,6 +766,7 @@
             for (let column = 1; column <= width; column += 1) {
               const block = document.createElement("span");
               block.className = "block";
+              block.dataset.order = String(blocks.length);
               if (row === height) block.classList.add("roof");
               else if ((row + column + buildingIndex) % 3 === 0) block.classList.add("window");
               block.style.gridColumn = String(column);
@@ -604,21 +777,18 @@
                 block.append(faceElement);
               }
               building.append(block);
-              blocks.push(block);
             }
           });
         }
-        return blocks;
       }
 
       function loadState() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-          if (!saved || !Number.isFinite(saved.towns) || !Number.isFinite(saved.power)) return { ...defaults };
+          if (!saved || !Number.isFinite(saved.power)) return { ...defaults };
           const normalized = {
-            towns: Math.max(0, Math.floor(saved.towns)),
+            defeated: Math.max(0, Math.floor(Number.isFinite(saved.defeated) ? saved.defeated : saved.towns) || 0),
             power: Math.max(0, saved.power),
-            damage: Math.max(0, Number.isFinite(saved.damage) ? saved.damage : 0),
             tapLevel: Math.max(0, Math.floor(saved.tapLevel) || 0),
             allyLevel: Math.max(0, Math.floor(saved.allyLevel) || 0),
             lastSavedAt: Number.isFinite(saved.lastSavedAt) ? saved.lastSavedAt : Date.now()
@@ -626,11 +796,6 @@
           const awaySeconds = Math.min(8 * 60 * 60, Math.max(0, (Date.now() - normalized.lastSavedAt) / 1000));
           const awayPower = awaySeconds * normalized.allyLevel;
           normalized.power += awayPower;
-          normalized.damage += awayPower;
-          while (normalized.damage >= 50 + normalized.towns * 25) {
-            normalized.damage -= 50 + normalized.towns * 25;
-            normalized.towns += 1;
-          }
           return normalized;
         } catch (error) {
           console.warn("セーブデータを読み込めませんでした。新しく開始します。", error);
@@ -641,10 +806,6 @@
       function saveState() {
         state.lastSavedAt = Date.now();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }
-
-      function townHealth() {
-        return 50 + state.towns * 25;
       }
 
       function tapDamage() {
@@ -669,44 +830,171 @@
         toastTimer = setTimeout(() => { elements.toast.textContent = ""; }, 2200);
       }
 
-      function attack(amount) {
-        state.power += amount;
-        state.damage += amount;
-        let conqueredTown = false;
-        while (state.damage >= townHealth()) {
-          state.damage -= townHealth();
-          state.towns += 1;
-          conqueredTown = true;
-        }
-        if (conqueredTown) {
-          elements.quip.textContent = quips[state.towns % quips.length];
-          showToast(`${state.towns > 1 ? "町を連続侵略！" : "町を侵略！"} ワヤヤンの勝利！`);
-        }
+      function defeatPerson(person) {
+        if (!person || person.element.classList.contains("evacuating")) return;
+        const reward = tapDamage();
+        person.element.classList.add("evacuating");
+        state.defeated += 1;
+        state.power += reward;
+        movement.targetPerson = null;
+        elements.quip.textContent = "「みんな逃げていったね。次は誰かな？」";
+        showToast(`人を撃退！ +${format(reward)} パワー`);
+        setTimeout(() => {
+          person.element.remove();
+          const index = people.indexOf(person);
+          if (index >= 0) people.splice(index, 1);
+          render();
+        }, 180);
         render();
       }
 
+      function createPerson() {
+        if (people.length >= 4) return;
+        const person = document.createElement("div");
+        person.className = "human";
+        person.setAttribute("role", "img");
+        person.setAttribute("aria-label", "道を歩く人");
+        person.innerHTML = '<span class="human-head"><span class="human-eye human-eye-left"></span><span class="human-eye human-eye-right"></span></span><span class="human-body"></span><span class="human-arm human-arm-left"></span><span class="human-arm human-arm-right"></span><span class="human-leg human-leg-left"></span><span class="human-leg human-leg-right"></span>';
+        elements.people.append(person);
+        const sceneRect = elements.scene.getBoundingClientRect();
+        const alienRect = elements.alien.getBoundingClientRect();
+        const alienX = alienRect.left - sceneRect.left;
+        const x = alienX > sceneRect.width / 2 ? -40 : sceneRect.width + 8;
+        const direction = x < 0 ? 1 : -1;
+        const roadRect = elements.scene.querySelector(".road").getBoundingClientRect();
+        const y = roadRect.top - sceneRect.top + (roadRect.height - person.offsetHeight) / 2;
+        person.style.left = `${x}px`;
+        person.style.top = `${y}px`;
+        people.push({ element: person, x, y, direction, speed: 24 + Math.random() * 16 });
+      }
+
       function render() {
-        const hp = townHealth();
-        const remaining = Math.max(0, hp - state.damage);
-        const progress = Math.min(100, (state.damage / hp) * 100);
-        const destroyedBlocks = Math.floor((progress / 100) * cityBlocks.length);
         const nextPowerCost = powerCost();
         const nextAllyCost = allyCost();
 
-        elements.townCount.textContent = format(state.towns);
+        elements.townCount.textContent = format(state.defeated);
         elements.power.textContent = format(state.power);
         elements.autoPower.textContent = `${format(state.allyLevel)} / 秒`;
-        elements.townName.textContent = townNames[Math.min(state.towns, townNames.length - 1)];
-        elements.townMessage.textContent = state.damage > 0 ? "ブロックの街がどんどん崩れていく……！" : "ワヤヤンが町にあらわれた！";
-        elements.healthFill.style.width = `${100 - progress}%`;
-        elements.healthLabel.textContent = `町の元気 ${Math.ceil((remaining / hp) * 100)}%`;
-        elements.healthTrack.setAttribute("aria-valuenow", String(Math.ceil((remaining / hp) * 100)));
-        elements.cityBlocks.forEach((block, index) => block.classList.toggle("destroyed", index < destroyedBlocks));
-        elements.attackDetail.textContent = `タップで ${format(tapDamage())} パワー`;
+        elements.townName.textContent = "地球の町";
+        elements.townMessage.textContent = people.length > 0 ? "道に人が現れた！照準を合わせよう！" : "道に人が現れるのを待っている……";
+        const crowd = Math.min(100, people.length * 25);
+        elements.healthFill.style.width = `${crowd}%`;
+        elements.healthLabel.textContent = `道にいる人 ${people.length} / 4 人`;
+        elements.healthTrack.setAttribute("aria-valuenow", String(crowd));
+        elements.attackDetail.textContent = `撃退で +${format(tapDamage())} パワー`;
         elements.powerDetail.textContent = `攻撃力 +2　｜　${format(nextPowerCost)} パワー`;
         elements.allyDetail.textContent = `毎秒 +1 パワー　｜　${format(nextAllyCost)} パワー`;
         elements.powerButton.disabled = state.power < nextPowerCost;
         elements.allyButton.disabled = state.power < nextAllyCost;
+      }
+
+      function updateAim() {
+        const sceneRect = elements.scene.getBoundingClientRect();
+        const alienRect = elements.alien.getBoundingClientRect();
+        elements.laserLayer.setAttribute("viewBox", `0 0 ${sceneRect.width} ${sceneRect.height}`);
+        const startX = alienRect.left - sceneRect.left + alienRect.width / 2;
+        const startY = alienRect.top - sceneRect.top + alienRect.height / 2;
+        const activePeople = people.filter(({ element }) => !element.classList.contains("evacuating"));
+        if (!movement.targetPerson || !activePeople.includes(movement.targetPerson)) {
+          const ahead = activePeople.filter((person) => {
+            const rect = person.element.getBoundingClientRect();
+            const x = rect.left - sceneRect.left + rect.width / 2;
+            return (x - startX) * movement.directionX > 0;
+          });
+          const pool = ahead.length > 0 ? ahead : activePeople;
+          pool.sort((a, b) => {
+            const rectA = a.element.getBoundingClientRect();
+            const rectB = b.element.getBoundingClientRect();
+            const distanceA = Math.hypot(rectA.left + rectA.width / 2 - alienRect.left - alienRect.width / 2, rectA.top + rectA.height / 2 - alienRect.top - alienRect.height / 2);
+            const distanceB = Math.hypot(rectB.left + rectB.width / 2 - alienRect.left - alienRect.width / 2, rectB.top + rectB.height / 2 - alienRect.top - alienRect.height / 2);
+            return distanceA - distanceB;
+          });
+          movement.targetPerson = pool[0] ?? null;
+        }
+
+        const targetRect = movement.targetPerson?.element.getBoundingClientRect();
+        const targetX = targetRect
+          ? targetRect.left - sceneRect.left + targetRect.width / 2
+          : startX + movement.directionX * 100;
+        const targetY = targetRect
+          ? targetRect.top - sceneRect.top + targetRect.height / 2
+          : startY;
+
+        elements.laserBeam.setAttribute("x1", String(startX));
+        elements.laserBeam.setAttribute("y1", String(startY));
+        elements.laserBeam.setAttribute("x2", String(targetX));
+        elements.laserBeam.setAttribute("y2", String(targetY));
+        elements.aimReticle.style.left = `${targetX}px`;
+        elements.aimReticle.style.top = `${targetY}px`;
+        return { startX, startY, targetX, targetY, sceneRect };
+      }
+
+      function lineHitsRect(startX, startY, endX, endY, rect) {
+        const dx = endX - startX;
+        const dy = endY - startY;
+        let min = 0;
+        let max = 1;
+        const boundaries = [
+          [-dx, startX - rect.left],
+          [dx, rect.right - startX],
+          [-dy, startY - rect.top],
+          [dy, rect.bottom - startY]
+        ];
+
+        for (const [direction, distance] of boundaries) {
+          if (direction === 0) {
+            if (distance < 0) return false;
+            continue;
+          }
+          const intersection = distance / direction;
+          if (direction < 0) min = Math.max(min, intersection);
+          else max = Math.min(max, intersection);
+          if (min > max) return false;
+        }
+        return true;
+      }
+
+      function beamHitsPerson(aim) {
+        const hits = people.flatMap((person) => {
+          if (person.element.classList.contains("evacuating")) return [];
+          const rect = person.element.getBoundingClientRect();
+          const localRect = {
+            left: rect.left - aim.sceneRect.left,
+            right: rect.right - aim.sceneRect.left,
+            top: rect.top - aim.sceneRect.top,
+            bottom: rect.bottom - aim.sceneRect.top
+          };
+          if (!lineHitsRect(aim.startX, aim.startY, aim.targetX, aim.targetY, localRect)) return [];
+          return [{
+            person,
+            distance: Math.hypot(
+              localRect.left + (localRect.right - localRect.left) / 2 - aim.startX,
+              localRect.top + (localRect.bottom - localRect.top) / 2 - aim.startY
+            )
+          }];
+        });
+        hits.sort((a, b) => a.distance - b.distance);
+        return hits[0]?.person ?? null;
+      }
+
+      function fireBeam() {
+        const aim = updateAim();
+        elements.laserLayer.classList.remove("firing");
+        elements.aimReticle.classList.remove("firing");
+        void elements.laserLayer.getBoundingClientRect();
+        elements.laserLayer.classList.add("firing");
+        elements.aimReticle.classList.add("firing");
+        setTimeout(() => {
+          elements.laserLayer.classList.remove("firing");
+          elements.aimReticle.classList.remove("firing");
+        }, 360);
+        const hitPerson = beamHitsPerson(aim);
+        if (hitPerson) {
+          movement.targetPerson = null;
+          defeatPerson(hitPerson);
+        } else {
+          showToast("ビームが人に当たらなかった！");
+        }
       }
 
       function moveAlien(timestamp) {
@@ -719,32 +1007,56 @@
         if (movement.keys.has("ArrowUp") || movement.keys.has("KeyW")) vertical -= 1;
         if (movement.keys.has("ArrowDown") || movement.keys.has("KeyS")) vertical += 1;
 
-        if (horizontal === 0 && vertical === 0) {
-          if (timestamp >= movement.nextTurnAt) {
-            const angle = Math.random() * Math.PI * 2;
-            movement.directionX = Math.cos(angle);
-            movement.directionY = Math.sin(angle);
-            movement.nextTurnAt = timestamp + 1200 + Math.random() * 1800;
-          }
+        const hasManualDirection = horizontal !== 0 || vertical !== 0;
+        if (!hasManualDirection) {
           horizontal = movement.directionX;
-          vertical = movement.directionY;
+          vertical = 0;
+        } else if (horizontal !== 0) {
+          movement.directionX = Math.sign(horizontal);
         }
 
         const distance = 75 * elapsed / (Math.hypot(horizontal, vertical) || 1);
         movement.x += horizontal * distance;
         movement.y += vertical * distance;
         const maxX = Math.max(0, elements.scene.clientWidth - elements.alien.offsetWidth);
-        const maxY = Math.max(0, elements.scene.clientHeight - elements.alien.offsetHeight);
-        if (movement.x < 0 || movement.x > maxX) movement.directionX *= -1;
-        if (movement.y < 0 || movement.y > maxY) movement.directionY *= -1;
+        const sceneRect = elements.scene.getBoundingClientRect();
+        const roadRect = elements.scene.querySelector(".road").getBoundingClientRect();
+        const roadY = roadRect.top - sceneRect.top + (roadRect.height - elements.alien.offsetHeight) / 2;
+        const maxY = Math.max(0, Math.min(elements.scene.clientHeight - elements.alien.offsetHeight, roadY));
+        if (movement.x < 0 || movement.x > maxX) {
+          movement.directionX *= -1;
+          movement.x = Math.max(0, Math.min(movement.x, maxX));
+          movement.targetPerson = null;
+        }
         movement.x = Math.max(0, Math.min(movement.x, maxX));
+        if (!hasManualDirection) movement.y += (maxY - movement.y) * Math.min(elapsed * 5, 1);
         movement.y = Math.max(0, Math.min(movement.y, maxY));
+        for (let index = people.length - 1; index >= 0; index -= 1) {
+          const person = people[index];
+          person.x += person.direction * person.speed * elapsed;
+          const personWidth = person.element.offsetWidth;
+          if (person.x < -personWidth - 4 || person.x > elements.scene.clientWidth + 4) {
+            person.element.remove();
+            people.splice(index, 1);
+            if (movement.targetPerson === person) movement.targetPerson = null;
+            render();
+          } else {
+            person.element.style.left = `${person.x}px`;
+          }
+        }
+        if (movement.targetPerson) {
+          const targetRect = movement.targetPerson.element.getBoundingClientRect();
+          const alienX = movement.x + elements.alien.offsetWidth / 2;
+          const targetX = targetRect.left - sceneRect.left + targetRect.width / 2;
+          if ((targetX - alienX) * movement.directionX < 0) movement.targetPerson = null;
+        }
         elements.alien.style.left = `${movement.x}px`;
         elements.alien.style.top = `${movement.y}px`;
+        updateAim();
         requestAnimationFrame(moveAlien);
       }
 
-      elements.attackButton.addEventListener("click", () => attack(tapDamage()));
+      elements.attackButton.addEventListener("click", fireBeam);
       document.addEventListener("keydown", (event) => {
         if (event.target instanceof Element && event.target.closest("input, textarea, select, [contenteditable='true']")) return;
         if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "KeyA", "KeyD", "KeyW", "KeyS"].includes(event.code)) {
@@ -755,7 +1067,7 @@
         if (event.code !== "Space" || event.repeat) return;
         if (event.target instanceof Element && event.target.closest("button, a")) return;
         event.preventDefault();
-        attack(tapDamage());
+        fireBeam();
       });
       document.addEventListener("keyup", (event) => movement.keys.delete(event.code));
       window.addEventListener("blur", () => movement.keys.clear());
@@ -789,9 +1101,17 @@
       });
 
       setInterval(() => {
-        if (state.allyLevel > 0) attack(state.allyLevel);
-        else render();
+        if (state.allyLevel > 0) {
+          state.power += state.allyLevel;
+          render();
+        }
       }, 1000);
+      createPerson();
+      setInterval(() => {
+        createPerson();
+        render();
+      }, 2600);
+      setInterval(fireBeam, 2000);
       setInterval(saveState, 5000);
       window.addEventListener("beforeunload", saveState);
       render();
