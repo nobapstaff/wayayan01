@@ -109,18 +109,90 @@
     }
 
     .alien {
-      display: grid;
+      position: relative;
       width: 124px;
       height: 124px;
       flex: 0 0 124px;
-      place-items: center;
       border-radius: 50%;
       background: #8bf0c5;
       box-shadow: 0 0 35px #88f7c579, inset 0 -8px #00000012;
-      font-size: 4.7rem;
       animation: hover 2.4s ease-in-out infinite;
       user-select: none;
     }
+
+    .antenna {
+      position: absolute;
+      z-index: 1;
+      top: -16px;
+      width: 4px;
+      height: 31px;
+      border-radius: 5px;
+      background: #d4ffe8;
+      transform-origin: bottom;
+    }
+
+    .antenna::after {
+      position: absolute;
+      top: -4px;
+      left: -3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d4ffe8;
+      content: "";
+    }
+
+    .antenna-left { left: 43px; transform: rotate(-19deg); }
+    .antenna-right { right: 43px; transform: rotate(19deg); }
+
+    .alien-face {
+      position: absolute;
+      top: 39px;
+      left: 50%;
+      display: flex;
+      width: 58px;
+      height: 31px;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 50%;
+      background: #293149;
+      transform: translateX(-50%);
+    }
+
+    .alien-eye {
+      width: 7px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: inset -2px -1px #a4b8c9;
+    }
+
+    .alien-arm, .alien-leg {
+      position: absolute;
+      z-index: 1;
+      background: #303345;
+    }
+
+    .alien-arm {
+      top: 70px;
+      width: 37px;
+      height: 18px;
+      border-radius: 99px;
+    }
+
+    .alien-arm-left { left: -17px; transform: rotate(35deg); }
+    .alien-arm-right { right: -17px; transform: rotate(-35deg); }
+
+    .alien-leg {
+      bottom: -7px;
+      width: 24px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    .alien-leg-left { left: 27px; transform: rotate(20deg); }
+    .alien-leg-right { right: 27px; transform: rotate(-20deg); }
 
     .buildings {
       display: flex;
@@ -217,7 +289,18 @@
       .game { width: min(100% - 20px, 760px); padding-top: 20px; }
       .town { min-height: 278px; padding: 16px 12px; }
       .scene { min-height: 147px; }
-      .alien { width: 94px; height: 94px; flex-basis: 94px; font-size: 3.6rem; }
+      .alien { width: 94px; height: 94px; flex-basis: 94px; }
+      .antenna { top: -13px; height: 25px; }
+      .antenna-left { left: 32px; }
+      .antenna-right { right: 32px; }
+      .alien-face { top: 29px; width: 46px; height: 25px; gap: 9px; }
+      .alien-eye { width: 6px; height: 7px; }
+      .alien-arm { top: 52px; width: 29px; height: 15px; }
+      .alien-arm-left { left: -13px; }
+      .alien-arm-right { right: -13px; }
+      .alien-leg { bottom: -5px; width: 19px; height: 16px; }
+      .alien-leg-left { left: 20px; }
+      .alien-leg-right { right: 20px; }
       .buildings { height: 106px; gap: 3px; }
       .controls { grid-template-columns: 1fr 1fr; }
       .upgrade.primary { grid-column: 1 / -1; min-height: 66px; }
@@ -244,7 +327,15 @@
     <section class="town" aria-label="侵略中の町">
       <span class="town-name" id="town-name">のどかな町</span>
       <div class="scene">
-        <div class="alien" aria-label="ワヤヤン">👾</div>
+        <div class="alien" role="img" aria-label="触覚とパンダのような手足がある、球体のワヤヤン">
+          <span class="antenna antenna-left"></span>
+          <span class="antenna antenna-right"></span>
+          <span class="alien-face"><span class="alien-eye"></span><span class="alien-eye"></span></span>
+          <span class="alien-arm alien-arm-left"></span>
+          <span class="alien-arm alien-arm-right"></span>
+          <span class="alien-leg alien-leg-left"></span>
+          <span class="alien-leg alien-leg-right"></span>
+        </div>
         <div class="buildings" id="buildings" aria-hidden="true">
           <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
           <span class="building">▪</span><span class="building">▪</span><span class="building">▪</span>
