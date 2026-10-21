@@ -66,7 +66,7 @@
     .town {
       position: relative;
       overflow: hidden;
-      min-height: 300px;
+      min-height: 440px;
       padding: 20px;
       border: 3px solid #435f3f;
       border-radius: 3px;
@@ -120,14 +120,14 @@
     .scene {
       position: relative;
       z-index: 1;
-      height: 220px;
+      height: 350px;
       perspective: 700px;
     }
 
     .alien {
       position: absolute;
       z-index: 2;
-      top: 28px;
+      top: 130px;
       left: 24px;
       width: 124px;
       height: 124px;
@@ -227,7 +227,7 @@
       position: absolute;
       right: 7%;
       bottom: 12px;
-      height: 178px;
+      height: 280px;
       align-items: end;
       gap: 4px;
       transform: rotateX(5deg);
@@ -240,7 +240,7 @@
       right: -12%;
       bottom: 0;
       left: -12%;
-      height: 30px;
+      height: 42px;
       border: 2px solid #526f3e;
       background-color: #83ad4e;
       background-image:
@@ -422,10 +422,10 @@
 
     @media (max-width: 560px) {
       .game { width: min(100% - 20px, 760px); padding-top: 20px; }
-      .town { min-height: 278px; padding: 16px 12px; }
-      .scene { height: 185px; }
+      .town { min-height: 380px; padding: 16px 12px; }
+      .scene { height: 290px; }
       .alien { width: 94px; height: 94px; }
-      .voxel-city { --block-size: 11px; right: 4%; bottom: 10px; height: 132px; }
+      .voxel-city { --block-size: 11px; right: 4%; bottom: 10px; height: 210px; }
       .antenna { top: -13px; height: 25px; }
       .antenna-left { left: 32px; }
       .antenna-right { right: 32px; }
@@ -543,7 +543,7 @@
       const cityBlocks = createCity();
       const movement = {
         x: 24,
-        y: 28,
+        y: 130,
         keys: new Set(),
         directionX: 1,
         directionY: 0,
